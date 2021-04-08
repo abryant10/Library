@@ -8,45 +8,47 @@
 </head>
 
 <body>
-    <div>
-        <h1>Library</h1>
+    <div class='header'>
+        <h1> My Library</h1>
     </div>
-    <div>
-        <button type = 'button' class = 'addBookButton'>+ Add Book</button>
+    <div class="headerUnderscore"></div>
+    <div class='addButtonDiv'>
+        <button type = 'button' class = 'addBookButton' id="addBookButton">+ Add Book</button>
     </div>
-    <div class="form-popup" id="myForm">
-        <button type="button" class="btn cancel" onclick="closeForm()">X</button>
-        
-        <form class="form-container">
-          
-          <h2>Add New Book Form</h2>
-        <ul>
-            <li>
-                <label for="titleField"><b>Title</b></label>
-                <input type="text" id="titleField" placeholder="Enter Title" name="title" required>
-            </li>
-            <li>
-                <label for="authorField"><b>Author</b></label>
-                <input type="text" id="authorField" placeholder="Enter Author" name="author" required>
-            </li>
-            <li>
-                <label for="pagesField"><b>Pages</b></label>
-                <input type="number" id="pagesField" placeholder="Number of pages" name="pages" required>
-            </li>
-            <li>
-                <label for="readField" class="switch">
-                    <b>Read</b>
-                    <input type="checkbox" id="readField" name="read">
-                    <span class="slider round"></span>
-                </label>
-            </li>
-            <li>
-                <button type = 'button' class="addBookSubmit" id="addBookSubmit">Add Book</button>
-            </li>          
-        </form>
+    <div class="form-popup" id="form-popup">
+        <div class = 'form-container'>
+            <button type="button" class="closeFormButton" id='closeFormButton'>X</button>
+            <h2>Add New Book Form</h2>
+            <form class="form-body" id='form-body'>  
+            <ul>
+                <li>
+                    <label for="titleField"><b>Title</b></label>
+                    <input type="text" id="titleField" placeholder="Enter Title" name="title" required>
+                </li>
+                <p class='formRequiredText' id='titleRequired'>*Title required</p>
+                <li>
+                    <label for="authorField"><b>Author</b></label>
+                    <input type="text" id="authorField" placeholder="Enter Author" name="author" required>
+                </li>
+                <p class='formRequiredText' id='authorRequired'>*Author required</p>
+                <li>
+                    <label for="pagesField"><b>Pages</b></label>
+                    <input type="number" id="pagesField" placeholder="Number of pages" name="pages" required>
+                </li>
+                <p class='formRequiredText' id='pagesRequired'>*Number of pages required</p>
+                <li>
+                    <label for="readField" class="switch">
+                        <b>Read</b>
+                        <input type="checkbox" id="readField" name="read">
+                    </label>
+                </li>
+                <li>
+                    <button type = 'button' class="addBookSubmit" id="addBookSubmit">Add Book</button>
+                </li>          
+            </form>
+        </div>
       </div>
     <div class = 'libraryFeed'>
-        Add books to see them here!
     </div>
 
 
@@ -60,3 +62,22 @@
 <script src ="scripts/script.js"> </script>
 </body> 
 </html> 
+
+
+<!--
+
+
+make delete book button
+
+make read toggle for form and card
+
+fomat form
+
+add button clicking hover
+
+add empty library image
+
+make page and form pretty
+
+add server save and login
+--> 
