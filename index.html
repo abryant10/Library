@@ -18,9 +18,9 @@
     <div class="form-popup" id="form-popup">
         <div class = 'form-container'>
             <button type="button" class="closeFormButton" id='closeFormButton'>X</button>
-            <h2>Add New Book Form</h2>
+            <h2 class='form-title'>Add New Book</h2>
             <form class="form-body" id='form-body'>  
-            <ul>
+            <ul class='form-list'>
                 <li>
                     <label for="titleField"><b>Title</b></label>
                     <input type="text" id="titleField" placeholder="Enter Title" name="title" required>
@@ -37,9 +37,10 @@
                 </li>
                 <p class='formRequiredText' id='pagesRequired'>*Number of pages required</p>
                 <li>
+                    <span class='formRead'><b>Read</b></span>
                     <label for="readField" class="switch">
-                        <b>Read</b>
                         <input type="checkbox" id="readField" name="read">
+                        <span class="slider round"></span>
                     </label>
                 </li>
                 <li>
@@ -51,14 +52,6 @@
     <div class = 'libraryFeed'>
     </div>
 
-
-
-
-
-
-
-
-
 <script src ="scripts/script.js"> </script>
 </body> 
 </html> 
@@ -66,12 +59,11 @@
 
 <!--
 
-
-make delete book button
-
 make read toggle for form and card
 
 fomat form
+
+change delete function from book name to array index
 
 add button clicking hover
 

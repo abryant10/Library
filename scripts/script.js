@@ -1,10 +1,49 @@
 let myLibrary = [];
-var bookDeleteButton = '';
+//var bookDeleteButton = ''; //dont think i need this
+const libraryFeed = document.querySelector('.libraryFeed');
+const addBookButton = document.getElementById('addBookButton');
+const addBookSubmit = document.getElementById('addBookSubmit');
+var formPopup = document.getElementById("form-popup");
+var formCloseButton = document.getElementById("closeFormButton");
+
+addBookSubmit.addEventListener('click', addBookToLibrary);
+// When the user clicks on the add book button, open the popup
+addBookButton.onclick = function() {
+  formPopup.style.display = "block";
+}
+// When the user clicks on (x), close the popup
+formCloseButton.onclick = function() {
+  formPopup.style.display = "none";
+  clearForm();
+}
+// When the user clicks anywhere outside of the popup, close it
+window.onclick = function(event) {
+  if (event.target == formPopup) {
+    formPopup.style.display = "none";
+    clearForm();
+  }
+}
+
 function Book (title, author, pages, read) {
   this.title = title;
   this.author = author;
   this.pages = pages;
   this.read = read;
+}
+
+Book.prototype.toggleReadStatus = function () {
+  console.log('hi');
+  if (this.read == 'Read') {
+    this.read = 'Not Read'
+  } else {
+    this.read = 'Read'
+  };
+}
+
+function toggleRead (e){
+  var toggleIndex = myLibrary.findIndex(i => i.title === e.target.dataset.index);
+  myLibrary[toggleIndex].toggleReadStatus;
+
 }
 
 function clearForm() {
@@ -21,7 +60,10 @@ function deleteBook(e){ //deletes book from array and rebuilds library feed with
   const chronologicalFeed = myLibrary.map(function (bookListing){
     var bookCard = document.createElement("div");
     bookCard.classList.add("bookCard");
-    bookCard.innerHTML = `<h3 class="bookTitle">${bookListing.title}</h3><br>Author: ${bookListing.author}<button class='bookDeleteButton' data-index='${bookListing.title}'>X</button><br>Number of pages: ${bookListing.pages}<br>Read statud: ${bookListing.read}`
+    bookCard.innerHTML = `<button class='bookDeleteButton' data-index='${bookListing.title}'>X</button><h3 class="bookTitle">${bookListing.title}</h3><br>Author: ${bookListing.author}<br>Number of pages: ${bookListing.pages}<br>Read status: ${bookListing.read}<label for="readFieldCard" class="switchCard">
+    <input type="checkbox" data-index='${bookListing.title}' id="readFieldCard" name="readCard">
+    <span class="slider round"></span>
+    </label>`
     libraryFeed.appendChild(bookCard);
   })
   var bookDeleteButton = document.querySelectorAll('.bookDeleteButton');
@@ -67,46 +109,19 @@ function addBookToLibrary() {
     const chronologicalFeed = myLibrary.map(function (bookListing){
       var bookCard = document.createElement("div");
       bookCard.classList.add("bookCard");
-      bookCard.innerHTML = `<h3 class="bookTitle">${bookListing.title}</h3><br>Author: ${bookListing.author}<button class='bookDeleteButton' data-index='${bookListing.title}'>X</button><br>Number of pages: ${bookListing.pages}<br>Read statud: ${bookListing.read}`
+      bookCard.innerHTML = `<button class='bookDeleteButton' data-index='${bookListing.title}'>X</button><h3 class="bookTitle">${bookListing.title}</h3><br>Author: ${bookListing.author}<br>Number of pages: ${bookListing.pages}<br>Read status: ${bookListing.read}<button class='toggleReadButtonCard' data-index='${bookListing.title}'>o</button>`
       libraryFeed.appendChild(bookCard);
     })
     
     formPopup.style.display = "none";
     clearForm();
+
     var bookDeleteButton = document.querySelectorAll('.bookDeleteButton');
-    bookDeleteButton.forEach(button => button.addEventListener('click', deleteBook))
+    bookDeleteButton.forEach(button => button.addEventListener('click', deleteBook));
+
+    var toggleReadButton = document.querySelectorAll('.toggleReadButtonCard');
+    toggleReadButton.forEach(toggle => toggle.addEventListener('click', toggleRead));
   }
 }  
 
-const libraryFeed = document.querySelector('.libraryFeed');
-const addBookButton = document.getElementById('addBookButton');
-const addBookSubmit = document.getElementById('addBookSubmit');
-
-
-addBookSubmit.addEventListener('click', addBookToLibrary);
-
-// Get the popup
-var formPopup = document.getElementById("form-popup");
-
-// Get the element that closes the popup
-var formCloseButton = document.getElementById("closeFormButton");
-
-// When the user clicks on the add book button, open the popup
-addBookButton.onclick = function() {
-  formPopup.style.display = "block";
-}
-
-// When the user clicks on (x), close the popup
-formCloseButton.onclick = function() {
-  formPopup.style.display = "none";
-  clearForm();
-}
-
-// When the user clicks anywhere outside of the popup, close it
-window.onclick = function(event) {
-  if (event.target == formPopup) {
-    formPopup.style.display = "none";
-    clearForm();
-  }
-}
 
