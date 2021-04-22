@@ -1,29 +1,12 @@
-let myLibrary = [];
-//var bookDeleteButton = ''; //dont think i need this
+// select elements 
+let myLibrary = JSON.parse(localStorage.getItem('myLibrary')) || [];
 const libraryFeed = document.querySelector('.libraryFeed');
-const addBookButton = document.getElementById('addBookButton');
-const addBookSubmit = document.getElementById('addBookSubmit');
-var formPopup = document.getElementById("form-popup");
-var formCloseButton = document.getElementById("closeFormButton");
+const addBookButton = document.querySelector('.addBookButton');
+const formPopup = document.getElementById("form-popup");
+const form = document.querySelector('.form-body');
+const formCloseButton = document.getElementById("closeFormButton");
 
-addBookSubmit.addEventListener('click', addBookToLibrary);
-// When the user clicks on the add book button, open the popup
-addBookButton.onclick = function() {
-  formPopup.style.display = "block";
-}
-// When the user clicks on (x), close the popup
-formCloseButton.onclick = function() {
-  formPopup.style.display = "none";
-  clearForm();
-}
-// When the user clicks anywhere outside of the popup, close it
-window.onclick = function(event) {
-  if (event.target == formPopup) {
-    formPopup.style.display = "none";
-    clearForm();
-  }
-}
-
+// function to  make book, push to array, populate list, update local store, reset form. 
 function Book (title, author, pages, read) {
   this.title = title;
   this.author = author;
@@ -31,97 +14,76 @@ function Book (title, author, pages, read) {
   this.read = read;
 }
 
-Book.prototype.toggleReadStatus = function () {
-  console.log('hi');
-  if (this.read == 'Read') {
-    this.read = 'Not Read'
-  } else {
-    this.read = 'Read'
-  };
-}
-
-function toggleRead (e){
-  var toggleIndex = myLibrary.findIndex(i => i.title === e.target.dataset.index);
-  myLibrary[toggleIndex].toggleReadStatus;
-
-}
-
-function clearForm() {
-  document.getElementById("form-body").reset();
-  document.getElementById('titleRequired').style.display = 'none';
-  document.getElementById('authorRequired').style.display = 'none';
-  document.getElementById('pagesRequired').style.display = 'none';
-}
-
-function deleteBook(e){ //deletes book from array and rebuilds library feed with new array
-  var spliceIndex = myLibrary.findIndex(i => i.title === e.target.dataset.index);
-  myLibrary.splice(spliceIndex, 1);
-  clearFeed();
-  const chronologicalFeed = myLibrary.map(function (bookListing){
-    var bookCard = document.createElement("div");
-    bookCard.classList.add("bookCard");
-    bookCard.innerHTML = `<button class='bookDeleteButton' data-index='${bookListing.title}'>X</button><h3 class="bookTitle">${bookListing.title}</h3><br>Author: ${bookListing.author}<br>Number of pages: ${bookListing.pages}<br>Read status: ${bookListing.read}<label for="readFieldCard" class="switchCard">
-    <input type="checkbox" data-index='${bookListing.title}' id="readFieldCard" name="readCard">
-    <span class="slider round"></span>
-    </label>`
-    libraryFeed.appendChild(bookCard);
-  })
-  var bookDeleteButton = document.querySelectorAll('.bookDeleteButton');
-  bookDeleteButton.forEach(button => button.addEventListener('click', deleteBook))
-}
-
-function clearFeed() {
-  while (libraryFeed.firstChild)  {
-    libraryFeed.removeChild(libraryFeed.lastChild);
+function addBookToLibrary(e) {
+  e.preventDefault();
+  const titleField = (this.querySelector('[name=title]')).value;
+  const authorField = (this.querySelector('[name=author]')).value;
+  const pagesField = (this.querySelector('[name=pages]')).value;
+  const readField = (this.querySelector('[name=read]')).checked;
+  var book = new Book(titleField, authorField, pagesField, readField);
+  myLibrary.push(book);
+  localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
+  populateList(myLibrary, libraryFeed);
+  formPopup.style.display = "none";
+  this.reset();
   }
-}
-
-function addBookToLibrary() {
-  var titleField = document.getElementById('titleField').value;
-  var authorField = document.getElementById('authorField').value;
-  var pagesField = document.getElementById('pagesField').value;
   
-  if (titleField == ''){ //logic to make fields required
-    document.getElementById('titleRequired').style.display = 'contents';
-    return;
-  } else if (authorField == ''){
-    document.getElementById('authorRequired').style.display = 'contents';
-    return;
-  } else if (pagesField == '') {
-    document.getElementById('pagesRequired').style.display = 'contents';
-    return;
-  } else {
-    clearFeed();
+// function to populate list
+function populateList(items = [], libraryFeed) {
+  libraryFeed.innerHTML = items.map((bookListing, i) => {
+    let readConverted;
+    if (bookListing.read) {
+      readConverted = 'Read'
+    }else { readConverted = 'Not Read'};
+    return ` 
+    <div class='bookCard'>
+      <button class='bookDeleteButton' data-index='${i}'>X</button>
+      <h3 class="bookTitle">${bookListing.title}</h3> 
+      <br>Author: ${bookListing.author}
+      <br>Number of pages: ${bookListing.pages}
+      <br>
+      <button class='toggleReadButtonCard' data-index='${i}'>${readConverted}</button>
+    </div>
+    `    
+  })
+}
+//funtion to toggle read and pop list
 
-    function getCheckVal(){
-      if (document.getElementById('readField').checked) {
-        return "Read"
-      } else {
-        return "Not Read"
-      };
-    }
+function toggleRead(e){
+  if(!e.target.matches('.toggleReadButtonCard')) return;
+  const element = e.target;
+  const elIndex = element.dataset.index;
+  myLibrary[elIndex].read = !myLibrary[elIndex].read;
+  localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
+  populateList(myLibrary, libraryFeed);
+}
+// function to delete and pop list and update local storage
 
-    var readField = getCheckVal();
-    var book = new Book(titleField, authorField, pagesField, readField);
+function deleteBook(e){ 
+  if(!e.target.matches('.bookDeleteButton')) return;
+  myLibrary.splice((e.target.dataset.index), 1);
+  localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
+  populateList(myLibrary, libraryFeed);
+}
 
-    myLibrary.push(book);
 
-    const chronologicalFeed = myLibrary.map(function (bookListing){
-      var bookCard = document.createElement("div");
-      bookCard.classList.add("bookCard");
-      bookCard.innerHTML = `<button class='bookDeleteButton' data-index='${bookListing.title}'>X</button><h3 class="bookTitle">${bookListing.title}</h3><br>Author: ${bookListing.author}<br>Number of pages: ${bookListing.pages}<br>Read status: ${bookListing.read}<button class='toggleReadButtonCard' data-index='${bookListing.title}'>o</button>`
-      libraryFeed.appendChild(bookCard);
-    })
-    
+form.addEventListener('submit', addBookToLibrary);
+// When the user clicks on the add book button, open the popup
+addBookButton.onclick = function() {
+  formPopup.style.display = "block";
+}
+// When the user clicks on (x), close the popup
+formCloseButton.onclick = function() {
+  formPopup.style.display = "none";
+}
+// When the user clicks anywhere outside of the popup, close it
+window.onclick = function(event) {
+  if (event.target == formPopup) {
     formPopup.style.display = "none";
-    clearForm();
-
-    var bookDeleteButton = document.querySelectorAll('.bookDeleteButton');
-    bookDeleteButton.forEach(button => button.addEventListener('click', deleteBook));
-
-    var toggleReadButton = document.querySelectorAll('.toggleReadButtonCard');
-    toggleReadButton.forEach(toggle => toggle.addEventListener('click', toggleRead));
   }
-}  
+}
+libraryFeed.addEventListener('click', deleteBook);
+libraryFeed.addEventListener('click', toggleRead);
 
-
+//initial populate list
+populateList(myLibrary, libraryFeed);
