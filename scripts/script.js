@@ -1,4 +1,3 @@
-// select elements 
 let myLibrary = JSON.parse(localStorage.getItem('myLibrary')) || [];
 const libraryFeed = document.querySelector('.libraryFeed');
 const addBookButton = document.querySelector('.addBookButton');
@@ -32,17 +31,23 @@ function addBookToLibrary(e) {
 function populateList(items = [], libraryFeed) {
   libraryFeed.innerHTML = items.map((bookListing, i) => {
     let readConverted;
+    let readClass;
     if (bookListing.read) {
       readConverted = 'Read'
-    }else { readConverted = 'Not Read'};
+      readClass = 'buttonRead';
+    }else { 
+      readConverted = 'Not Read';
+      readClass = 'buttonNotRead';
+    };
     return ` 
     <div class='bookCard'>
       <button class='bookDeleteButton' data-index='${i}'>X</button>
       <h3 class="bookTitle">${bookListing.title}</h3> 
-      <br>Author: ${bookListing.author}
-      <br>Number of pages: ${bookListing.pages}
+      <br><b>Author:</b> ${bookListing.author}
       <br>
-      <button class='toggleReadButtonCard' data-index='${i}'>${readConverted}</button>
+      <br><b>Page Count:</b> ${bookListing.pages}
+      <br>
+      <button class='toggleReadButtonCard ${readClass}' data-index='${i}'>${readConverted}</button>
     </div>
     `    
   })
@@ -66,6 +71,15 @@ function deleteBook(e){
   populateList(myLibrary, libraryFeed);
 }
 
+// function to add message to an empty library
+function checkEmpty () {
+  if (myLibrary[0] == undefined) {
+    libraryFeed.innerHTML = `
+    <div class='emptyLibraryDiv'>Your library is empty &#128577 <br> Add books to save them here!</div>`
+  } else {return};
+}
+
+//event listeners 
 
 form.addEventListener('submit', addBookToLibrary);
 // When the user clicks on the add book button, open the popup
@@ -82,8 +96,16 @@ window.onclick = function(event) {
     formPopup.style.display = "none";
   }
 }
+window.addEventListener('keydown', function(e) {
+  if (e.key === "Escape") {
+    formPopup.style.display = "none";
+  }
+})
 libraryFeed.addEventListener('click', deleteBook);
 libraryFeed.addEventListener('click', toggleRead);
+window.addEventListener('click', checkEmpty);
 
-//initial populate list
+// populate list on startup
+
 populateList(myLibrary, libraryFeed);
+checkEmpty();
