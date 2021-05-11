@@ -5,12 +5,13 @@ const formPopup = document.getElementById("form-popup");
 const form = document.querySelector('.form-body');
 const formCloseButton = document.getElementById("closeFormButton");
 
-// function to  make book, push to array, populate list, update local store, reset form. 
-function Book (title, author, pages, read) {
+class Book {
+  constructor (title, author, pages, read) {
   this.title = title;
   this.author = author;
   this.pages = pages;
   this.read = read;
+  }
 }
 
 function addBookToLibrary(e) {
