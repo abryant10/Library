@@ -19,19 +19,31 @@
         <div class = 'form-container'>
             <button type="button" class="closeFormButton" id='closeFormButton'>X</button>
             <h2 class='form-title'>Add New Book</h2>
-            <form class="form-body" id='form-body'>  
+            <form novalidate class="form-body" id='form-body'>  
             <ul class='form-list'>
                 <li>
-                    <label for="titleField"><b>Title&#160;&#160;&#160;&#160;&#160;</b></label>
-                    <input type="text" id="titleField" placeholder="Enter Title" name="title" required>
+                    <label for="titleField"><b>Title<span style='color: red'>*</span></b>
+                      <div class='formInput'>
+                       <input type="text" id="titleField" placeholder="Enter Title" name="title" required>
+                        <span class="error" aria-live="polite"></span>
+                      </div>
+                    </label>
                 </li>
                 <li>
-                    <label for="authorField"><b>Author</b></label>
+                    <label for="authorField"><b>Author<span style='color: red'>*</span></b>
+                      <div class='formInput'>
                     <input type="text" id="authorField" placeholder="Enter Author" name="author" required>
+                    <span class="error" aria-live="polite"></span>
+                  </div>
+                  </label>
                 </li>
                 <li>
-                    <label for="pagesField"><b>Pages&#160;</b></label>
+                    <label for="pagesField"><b>Pages<span style='color: red'>*</span>&#160;</b>
+                      <div class='formInput'>
                     <input type="number" id="pagesField" placeholder="Number of pages" name="pages" required>
+                    <span class="error" aria-live="polite"></span>
+                  </div>
+                  </label>
                 </li>
                 <li>
                     <span class='formRead'><b>Read</b></span>

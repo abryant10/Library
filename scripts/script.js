@@ -3,6 +3,13 @@ const libraryFeed = document.querySelector('.libraryFeed');
 const addBookButton = document.querySelector('.addBookButton');
 const formPopup = document.getElementById("form-popup");
 const form = document.querySelector('.form-body');
+const titleField = document.querySelector('[name=title]');
+const titleError = document.querySelector('#titleField + span.error');
+const authorError = document.querySelector('#authorField + span.error');
+const pagesError = document.querySelector('#pagesField + span.error');
+const authorField = document.querySelector('[name=author]');
+const pagesField = document.querySelector('[name=pages]');
+const readField = document.querySelector('[name=read]');
 const formCloseButton = document.getElementById("closeFormButton");
 
 class Book {
@@ -16,16 +23,16 @@ class Book {
 
 function addBookToLibrary(e) {
   e.preventDefault();
-  const titleField = (this.querySelector('[name=title]')).value;
-  const authorField = (this.querySelector('[name=author]')).value;
-  const pagesField = (this.querySelector('[name=pages]')).value;
-  const readField = (this.querySelector('[name=read]')).checked;
-  var book = new Book(titleField, authorField, pagesField, readField);
+  const titleFieldValue = titleField.value;
+  const authorFieldValue = authorField.value;
+  const pagesFieldValue = pagesField.value;
+  const readFieldValue = readField.checked;
+  var book = new Book(titleFieldValue, authorFieldValue, pagesFieldValue, readFieldValue);
   myLibrary.push(book);
   localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
   populateList(myLibrary, libraryFeed);
   formPopup.style.display = "none";
-  this.reset();
+  form.reset();
   }
   
 // function to populate list
@@ -76,13 +83,33 @@ function deleteBook(e){
 function checkEmpty () {
   if (myLibrary[0] == undefined) {
     libraryFeed.innerHTML = `
-    <div class='emptyLibraryDiv'>Your library is empty &#128577 <br> Add books to save them here!</div>`
+    <div class='emptyLibraryDiv'>Your library is empty <br> Add books to save them here!</div>`
   } else {return};
 }
+ const showTitleError = function showTitleError() {
+  if(titleField.validity.valueMissing) {
+     titleError.textContent = 'Please enter a book title.';
+  }
+  titleError.className = 'error active';
+};
+
+const showAuthorError = function showAuthorError() {
+  if(authorField.validity.valueMissing) {
+     authorError.textContent = 'Please enter an author.';
+  }
+  authorError.className = 'error active';
+};
+
+const showPagesError = function showPagesError() {
+  if(pagesField.validity.valueMissing) {
+     pagesError.textContent = 'Please enter the number of pages.';
+  }
+  pagesError.className = 'error active';
+};
 
 //event listeners 
 
-form.addEventListener('submit', addBookToLibrary);
+
 // When the user clicks on the add book button, open the popup
 addBookButton.onclick = function() {
   formPopup.style.display = "block";
@@ -106,6 +133,51 @@ libraryFeed.addEventListener('click', deleteBook);
 libraryFeed.addEventListener('click', toggleRead);
 window.addEventListener('click', checkEmpty);
 
+titleField.addEventListener('input', function (event) {
+  if ( titleField.validity.valid) {
+    titleError.textContent = ''; 
+    titleError.className = 'error'; 
+  } else {
+    showTitleError();
+  }
+});
+
+authorField.addEventListener('input', function (event) {
+  if ( authorField.validity.valid) {
+    authorError.textContent = ''; 
+    authorError.className = 'error'; 
+  } else {
+    showAuthorError();
+  }
+});
+
+pagesField.addEventListener('input', function (event) {
+  if ( pagesField.validity.valid) {
+    pagesError.textContent = ''; 
+    pagesError.className = 'error'; 
+  } else {
+    showPagesError();
+  }
+});
+
+form.addEventListener('submit', function (event) {
+  if(!titleField.validity.valid) {
+    showTitleError();
+    event.preventDefault();
+    return;
+  }
+  if(!authorField.validity.valid) {
+    showAuthorError();
+    event.preventDefault();
+    return;
+  }
+  if(!pagesField.validity.valid) {
+    showPagesError();
+    event.preventDefault();
+    return;
+  }
+  addBookToLibrary(event);
+});
 // populate list on startup
 
 populateList(myLibrary, libraryFeed);
